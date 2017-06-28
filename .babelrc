@@ -1,0 +1,18 @@
+{
+  //预制代码
+  "presets" : [
+    //webpack 现在已经支持原声的 import语句了，并且将其运动在tree-shaking特性上
+    ["es2015",{"modules": false}],
+
+    //指定要启用的语言规范级别
+    "stage-2",
+
+    //转译React组件为javascript代码
+    "react"
+  ],
+  "plugins" : [
+    //开启React代码模块热替换(HMR)
+    "react-hot-loader/babel",
+    "react-hot-loader/babel", "transform-decorators-legacy"
+  ]
+}
