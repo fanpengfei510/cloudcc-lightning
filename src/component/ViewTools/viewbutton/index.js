@@ -7,17 +7,22 @@ import {Button, Radio, Icon, Menu, Dropdown} from 'antd'
 import 'whatwg-fetch';
 const SubMenu = Menu.SubMenu;
 
-class ViewButton extends Component {
-  constructor(porps) {
-    super(porps);
-    this.state = {
-      size: 'large',
-      btn : []
-    }
+function status(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return Promise.resolve(response);
   }
+  else {
+    return Promise.reject(new Error(response.statusText));
+  }
+}
+function json(response) {
+  return response.json();
+}
 
+class ViewButton extends Component {
   render() {
-    var nodes = this.state.btn.map((value,index)=>{
+    const {btn} = this.props;
+    var nodes = btn.map((value,index)=>{
       if(index < 3){
         return (
           <Radio.Button value={value.name} key={index}>{value.name}</Radio.Button>
@@ -25,7 +30,7 @@ class ViewButton extends Component {
       }
     });
 
-    var node = this.state.btn.map((value,index)=>{
+    var node = btn.map((value,index)=>{
       if(index > 2){
         return (
           <Menu.Item key={index} value={value.name}>{value.name}</Menu.Item>
@@ -52,7 +57,7 @@ class ViewButton extends Component {
 
     return (
       <div style={{textAlign: "right"}}>
-        <Radio.Group size={this.state.size}>
+        <Radio.Group size="large">
           {nodes}
           <Dropdown overlay={menu} trigger={['click']}>
             <Radio.Button value="down"><Icon type="caret-down"/></Radio.Button>
@@ -63,7 +68,23 @@ class ViewButton extends Component {
   }
 
   componentDidMount(){
-
+    const that = this;
+    const {viewbtn} = this.props;
+    fetch(viewbtn)
+      .then(status)
+      .then(json)
+      .then((data)=>{
+        const {btn} = that.state;
+        const item = data.data.listBtn.map((value,index)=>{
+          return {
+            name : value.label,
+            id : value.id
+          }
+        });
+        that.setState({
+          btn : item
+        })
+      })
   }
 };
 

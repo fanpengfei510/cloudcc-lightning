@@ -18,7 +18,7 @@ class BodyMain extends Component {
                 <List />
               </TabPane>
               <TabPane tab="详细信息" key="2">
-                {/*<Info />*/}
+                <Info />
               </TabPane>
             </Tabs>
           </Col>

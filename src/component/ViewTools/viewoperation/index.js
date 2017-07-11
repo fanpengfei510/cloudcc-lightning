@@ -3,16 +3,23 @@
  * Created by fanpf on 2017/5/18.
  */
 import React,{Component} from 'react';
-import {Button,Icon,Menu,Dropdown,Radio,Modal,Row,Col,Tooltip} from 'antd';
-
+import {Button,Icon,Menu,Dropdown,Radio,Modal,Row,Col,Tooltip,Select} from 'antd';
+const Option = Select.Option;
 import NewsModal from './createview'
 
 class ViewOperation extends Component{
   constructor(porps){
     super(porps);
     this.state = {
-      visible : false
-    }
+      visible : false,
+      setting : false,
+      delview : false
+    };
+    this.onShow = this.onShow.bind(this);
+    this.onGrid = this.onGrid.bind(this);
+    this.handleModal = this.handleModal.bind(this);
+    this.onok = this.onok.bind(this);
+    this.onclear = this.onclear.bind(this);
   }
 
   /*
@@ -23,11 +30,19 @@ class ViewOperation extends Component{
       case "1":
         this.setState({
           visible : true
-        })
+        });
         break;
       case "2":
         this.setState({
           visible : true
+        });
+        break;
+      case "3":
+        console.log('3')
+        break;
+      case "4":
+        this.setState({
+          delview : true
         })
         break;
     }
@@ -37,14 +52,22 @@ class ViewOperation extends Component{
    * @method 选项卡页列表与看板切换
    */
   onGrid = ({key})=> {
-    if({key}.key=="list"){
-      this.props.onClicked({
-      grid : true
-      })
-    }else if({key}.key=="grid"){
-      this.props.onClicked({
-        grid : false
-        })
+    switch({key}.key){
+      case "list":
+        this.props.onClicked({
+          grid : true
+        });
+        break;
+      case "grid":
+        this.props.onClicked({
+          grid : false
+        });
+        break;
+      case "setting":
+        this.setState({
+          setting : true
+        });
+        break;
     }
   };
 
@@ -55,9 +78,23 @@ class ViewOperation extends Component{
     this.setState(visible)
   };
 
+  onok = ()=>{
+    this.setState({
+      setting : false,
+      delview : false
+    })
+  };
+
+  onclear = ()=>{
+    this.setState({
+      setting : false,
+      delview : false
+    })
+  };
+
   onEditTd = ()=> {
     console.log('编辑')
-  }
+  };
   render(){
     const viewmode = (
       <Menu  onClick={this.onShow}>
@@ -93,6 +130,37 @@ class ViewOperation extends Component{
             <Radio.Button value="print" className="btnGroup"><i className="icon-print"></i></Radio.Button>
           </Radio.Group>
         </div>
+
+        <Modal
+          title="看板设置"
+          visible={this.state.setting}
+          onOk={this.onok}
+          onCancel={this.onclear}
+          width="45%"
+        >
+          <p style={{margin:'5px 0'}}>汇总方式</p>
+          <Select defaultValue="--无--" style={{width:'100%',marginBottom:'15px'}} size="large">
+            <Option value="总金额">总金额</Option>
+            <Option value="年收入">年收入</Option>
+            <Option value="员工数量">员工数量</Option>
+          </Select>
+          <p style={{margin:'5px 0'}}>分组项目</p>
+          <Select defaultValue="--无--" style={{width:'100%'}} size="large">
+            <Option value="更新状态">更新状态</Option>
+            <Option value="潜在客户所有人">潜在客户所有人</Option>
+            <Option value="潜在客户来源">潜在客户来源</Option>
+          </Select>
+        </Modal>
+
+        <Modal
+          title="删除视图"
+          visible={this.state.delview}
+          onOk={this.onok}
+          onCancel={this.onclear}
+        >
+          <p>您确定是否删除此视图？</p>
+        </Modal>
+
       </div>
     )
   }

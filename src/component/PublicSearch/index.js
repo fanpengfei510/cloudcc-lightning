@@ -3,7 +3,7 @@
  * Created by fanpf on 2017/6/26.
  */
 import React, {Component} from 'react';
-import {Select, Popover, Input, Form,Row,Col} from 'antd';
+import {Select, Popover, Input, Form,Row,Col,Icon} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 let uuid = 0;
@@ -90,14 +90,18 @@ class Search_Plug extends Component {
    * @param k
    */
   removeRow = (k)=>{
-    const {form} = this.props;
+    const { form } = this.props;
+    // can use data-binding to get
     const keys = form.getFieldValue('keys');
-    if(keys.length === 1){
-      return
+    // We need at least one passenger
+    if (keys.length === 0) {
+      return;
     }
+
+    // can use data-binding to set
     form.setFieldsValue({
-      keys : keys.filter(key => key !== k)
-    })
+      keys: keys.filter(key => key !== k),
+    });
   };
 
   render() {
@@ -114,8 +118,9 @@ class Search_Plug extends Component {
         <FormItem
           style={{marginBottom: 0}}
           key={k}
+          required={false}
         >
-          {getFieldDecorator('key', {
+          {getFieldDecorator('row', {
             rules: [{required: false}]
           })(
             <Row style={{marginTop : 5}}>
@@ -145,6 +150,12 @@ class Search_Plug extends Component {
               <Col span={3}> 与</Col>
             </Row>
           )}
+          <Icon
+            className="dynamic-delete-button"
+            type="close-circle"
+            disabled={keys.length === 1}
+            onClick={() => this.removeRow(k)}
+          />
         </FormItem>
       )
     });

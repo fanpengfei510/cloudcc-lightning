@@ -33,7 +33,8 @@ class Branch extends Component {
       count: 26875,
       data: [],
       item : [],
-      loading : true
+      loading : true,
+      tabs : []
     }
   }
 
@@ -74,20 +75,10 @@ class Branch extends Component {
     const {width} = this.props.size;
     const {data,item} = this.state;
     const nodes = data.map((value,index)=>{
-      const arr = value.data[0].data;
-      const item = arr.map((value,index)=>{
-        return(
-          <div className="item" key={index}>
-            <a href="#">{value.name}</a>
-            <p>{value.createbyid}</p>
-            <p>￥ {value.number}</p>
-          </div>
-        )
-      });
 
       var sum = 0;
-      for(let i=0; i<arr.length;i++){
-        sum += parseInt(arr[i].number)
+      for(var i=0; i<data.length; i++){
+        sum += value.sumFieldValue;
       }
       const settings = {
         start: 0,
@@ -97,19 +88,22 @@ class Branch extends Component {
         useGroup: true,
         animation: 'up',
       };
-
       return(
         <li key={index}>
-          <Tooltip placement="bottom" title={value.data[0].groupFieldValue}>
+          <Tooltip placement="bottom" title={value.groupFieldValue}>
             <div className="stage">
-              <span>{value.data[0].groupFieldValue} ({value.data[0].total})</span>
+              <span>{value.groupFieldValue} ({value.total})</span>
             </div>
           </Tooltip>
           <div className="count">
             <AnimationCount {...settings}/>
           </div>
           <div className="box" ref={this.sortableGroupDecorator} style={{minWidth: 250, height: this.state.ulheight}}>
-            {item}
+            <div className="item" key={index}>
+              <a href="#">{value.name}</a>
+              <p>{value.createbyid}</p>
+              <p>￥ {value.number}</p>
+            </div>
           </div>
         </li>
       )
@@ -127,18 +121,23 @@ class Branch extends Component {
 
   componentDidMount() {
     const {viewboard} = this.props;
-    this.getContent(viewboard)
+    this.getTabs(viewboard)
   }
 
-  getContent(url){
-    const {data} = this.state;
+  getTabs(url){
+    const {tabs} = this.state;
     const that = this;
     fetch(url)
       .then(status)
       .then(json)
       .then((data)=>{
-        const item = data.data.map((value,index)=>{
-          return value;
+        const item = data.data.dataInfo.groupFieldData.map((value,index)=>{
+          return {
+            total : value.total,
+            sumFieldValue : value.sumFieldValue,
+            groupFieldValue : value.groupFieldValue,
+            recordtype : value.recordtype
+          }
         });
         that.setState({
           data : item

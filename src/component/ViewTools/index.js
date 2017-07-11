@@ -10,34 +10,39 @@ import ViewSearch from './viewsearch';
 import ViewOperation from './viewoperation';
 
 class Tools extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      
-    }
-  }
-
   render() {
+    const {prefix,viewlist,viewToggle,btn} = this.props;
     return (
       <div className="tools">
         <Row>
           <Col span={12}>
             {/*切换查看视图*/}
-            <ViewSelect/>
+            <ViewSelect
+              viewlist={viewlist}
+              viewToggle={viewToggle}
+              viewId={this.props.viewId}
+              prefix={this.props.prefix}
+            />
           </Col>
           <Col span={12}>
             {/*视图操作按钮*/}
-            <ViewButton/>
+            <ViewButton
+              viewbtn={this.props.viewbtn}
+              btn={btn}
+            />
           </Col>
         </Row>
         <Row>
           <Col span={12}>
             {/*视图搜索*/}
-            <ViewSearch/>
+            <ViewSearch
+              search={this.props.search}
+            />
           </Col>
           <Col span={12}>
             {/*标准工作操作*/}
-            <ViewOperation  onClicked={this.props.onToggle}/>
+            <ViewOperation
+              onClicked={this.props.onToggle}/>
           </Col>
         </Row>
       </div>

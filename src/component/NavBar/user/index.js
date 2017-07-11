@@ -6,8 +6,6 @@ import React, {Component} from 'react';
 import {Popover} from 'antd';
 import 'whatwg-fetch';
 
-// const api = "http://test.dev.cloudcc.com/executetab.action?serviceName=getLoginUserInfo";
-
 function status(response) {
   if (response.status >= 200 && response.status < 300) {
     return Promise.resolve(response);
@@ -24,7 +22,7 @@ class User extends Component {
   constructor(porps) {
     super(porps);
     this.state = {
-      userinfo: ''
+      user: []
     }
   }
 
@@ -42,7 +40,7 @@ class User extends Component {
           <img
             src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1495021503373&di=0a038c09f2c1186f9284d220f7ae8064&imgtype=0&src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fzhidao%2Fwh%253D450%252C600%2Fsign%3Dda2850f591eef01f4d4110c1d5ceb513%2F1b4c510fd9f9d72a0efef98cd12a2834359bbb8d.jpg"
             alt="" width="32" href="32"/>
-          <a href="#">{this.state.userinfo} <span className="caret"></span></a>
+          <a href="#">{this.state.user} <span className="caret"></span></a>
         </Popover>
 
         <div className="icon">
@@ -55,7 +53,18 @@ class User extends Component {
   }
 
   componentDidMount() {
-
+    const that = this;
+    const {user} = this.props;
+    fetch(user)
+      .then(status)
+      .then(json)
+      .then((data)=>{
+        const {user} = that.state;
+        const name = data.data.userName;
+        that.setState({
+          user : name
+        })
+      })
   }
 }
 

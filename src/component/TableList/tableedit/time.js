@@ -2,8 +2,9 @@
  * Created by fanpf on 2017/5/19.
  */
 import React,{Component} from 'react';
-import {Input,Icon} from  'antd';
-
+import {DatePicker,Icon} from  'antd';
+import moment from 'moment';
+const {MonthPicker,RangePicker} = DatePicker;
 
 class EditableCell extends Component{
   constructor(prpos){
@@ -14,19 +15,21 @@ class EditableCell extends Component{
     }
   }
 
-  handleChange = (e)=> {
-    const value = e.target.value;
-    this.setState({value})
-  };
+  onChange(value, dateString) {
+    console.log('Selected Time: ', value);
+    console.log('Formatted Selected Time: ', dateString);
+  }
 
-  /**
-   * @method 原始数据是否发生改变
-   */
-  check = () => {
-    this.setState({ editable: false });
-    if (this.props.onChange && this.props.value !== this.state.value) {
+  check = ()=> {
+    this.setState({
+      editable : false
+    });
+    if(this.props.onChange){
       this.props.onChange(this.state.value);
-      console.log('111')
+      if(this.props.value !== this.state.value){
+        this.props.isEdit({editchange: true})
+        console.log('true')
+      }
     }
   };
 
@@ -44,10 +47,10 @@ class EditableCell extends Component{
           {
             editable ?
               <div className="editable-cell-input-wrapper">
-                <Input
-                  value = {value}
-                  onChange = {this.handleChange}
-                  onPressEnter={this.check}
+                <DatePicker
+                  format="YYYY-MM-DD HH:mm:ss"
+                  placeholder="Select Time"
+                  onChange={this.onChange}
                 />
                 <Icon
                   type="check"

@@ -9,23 +9,18 @@ import User from './user';
 import Nav from './nav'
 import sizeMe from 'react-sizeme';
 
-import 'antd/dist/antd.css'
 import '../../lib/css/font-awesome.css'
-import '../../style/App.css';
+//公用接口
+const BASE_API = "http://localhost:3000";
+//用户信息
+const SIGN_API = BASE_API + "/user";
 
+//所有应用接口
+const SYSTEM_API = BASE_API + "/applist";
+
+//导航栏
+const NAV_API = BASE_API + "/tabname";
 class NavBar extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      prefix : ''
-    }
-  }
-
-  changePrefix(prefix){
-    this.setState({
-      prefix : prefix
-    })
-  }
   render(){
     const {width} = this.props.size;
     return (
@@ -41,25 +36,25 @@ class NavBar extends Component {
             </Col>
             <Col span={6} style={{textAlign:'right'}}>
               {/*用户信息*/}
-              <User/>
+              <User
+                user={SIGN_API}
+              />
             </Col>
           </Row>
-          <Row style={{width:width,overflow:'hidden'}}>
+          <Row style={{width:width,overflow:'hidden',height:38}}>
             {/*导航菜单*/}
             <Nav
-              system={this.props.system}
-              nav={this.props.nav}
+              system={SYSTEM_API}
+              nav={NAV_API}
               binding={this.props.binding}
-              changePrefix={this.changePrefix.bind(this)}
+              prefix={this.props.prefix}
+              getViewSelect={this.props.getViewSelect}
             />
           </Row>
         </Row>
       </div>
     );
   };
-  componentDidMount(){
-
-  }
 };
 
 const config = {monitorWidth : true}

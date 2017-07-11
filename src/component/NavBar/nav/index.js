@@ -26,6 +26,7 @@ class Nav extends Component {
       loading: false,
       visible: false,
       systemItem: [],
+      prefix : this.props.prefix,
       tabname: [],
       systemtext: "CloudCC",
       navId: "",
@@ -37,8 +38,13 @@ class Nav extends Component {
       icon: ['icon-globe', 'icon-group', 'icon-bookmark', 'icon-calendar', 'icon-list-ol',
         'icon-cloud', 'icon-pencil', 'icon-desktop', 'icon-puzzle-piece', 'icon-folder',
         'icon-asterisk', 'icon-bell', 'icon-tachometer', 'icon-cube', 'icon-filter',
-        'icon-fire', 'icon-leaf', 'icon-refresh', 'icon-send', 'icon-sitemap'],
-    }
+        'icon-fire', 'icon-leaf', 'icon-refresh', 'icon-heart', 'icon-sitemap',
+        'icon-coffee','icon-star','icon-tag','icon-random','icon-road'],
+    };
+    this.showModal = this.showModal.bind(this);
+    this.handlecancel = this.handlecancel.bind(this);
+    this.systemToggle = this.systemToggle.bind(this);
+    this.getData = this.getData.bind(this);
   }
 
   /*
@@ -61,7 +67,11 @@ class Nav extends Component {
    * @method 点击系统应用切换
    */
   systemToggle = (e) => {
-
+    const {nav} = this.props;
+    e.preventDefault();
+    const id = e.target.id;
+    this.getData(nav + "="+ id);
+    this.setState({visible: false})
   };
 
   render() {
@@ -70,9 +80,9 @@ class Nav extends Component {
       return (
         <li key={value.id}>
           <div style={{whiteSpace: 'nowrap'}}>
-            <span className="grap" style={{background: bg[index - 1]}}><i className={icon[index - 1]}></i></span>
+            <span className="grap" style={{background: bg[index - 1]}}><i className={icon[index]}></i></span>
             <div className="box">
-              <a href="home_mainPage.action">{value.items}</a>
+              <a href="javascript:void(0)" onClick={this.systemToggle} id={value.id}>{value.items}</a>
               <p>{value.items}</p>
             </div>
           </div>
@@ -83,7 +93,7 @@ class Nav extends Component {
     var navbar = tabname.map((value, index) => {
       if (value.type == 'object') {
         return (
-          <Menu.Item key={value.id}><a href="#" onClick={this.nav_link}>{value.tabname}</a></Menu.Item>
+          <Menu.Item key={value.id}><a href="javascript:void(0)" prefix={value.prefix} onClick={()=>this.props.prefix({prefix : value.prefix,name : value.tabname})}>{value.tabname}</a></Menu.Item>
         );
       } else {
         return (
@@ -142,6 +152,7 @@ class Nav extends Component {
 
   componentDidMount() {
     let that = this;
+    const {systemItem} = this.state;
     const {system,binding,nav} = this.props;
     fetch(system + binding,{
       credentials : 'include'
@@ -160,7 +171,6 @@ class Nav extends Component {
           systemItem : item
         })
       });
-
     this.getData(nav);
   }
 
@@ -170,13 +180,14 @@ class Nav extends Component {
       .then(status)
       .then(json)
       .then((data)=>{
-        var tabname = that.state.tabname;
-        console.log(data)
+        var {tabname,systemId} = that.state;
         var item = data.data.map((value,index)=>{
           return {
             tabname : value.tabName,
             id : value.id,
-            url : value.url
+            url : value.url,
+            prefix : value.prefix,
+            type : value.type
           }
         });
         that.setState({

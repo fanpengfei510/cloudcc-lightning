@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import {Modal,Row,Col,Button,Form,Input,Tooltip,Icon,Checkbox,Radio,Select,Transfer,Table} from 'antd';
+import PublicSearch from '../../../PublicSearch'
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 
-const provinceData = ['Zhejiang', 'Jiangsu'];
+const provinceData = ['无','创建人','创建时间'];
 const cityData = {
-  Zhejiang: ['Hangzhou', 'Ningbo', 'Wenzhou'],
-  Jiangsu: ['Nanjing', 'Suzhou', 'Zhenjiang'],
+  无 : ['无'],
+  创建人 : ['王宇','小健','王菲'],
+  创建时间: ['2017/02/22','201705/11','2017/10/01']
 };
 
 class NewsViewForm extends Component{
@@ -26,7 +28,8 @@ class NewsViewForm extends Component{
       targetKeys : [],
       title : '第一步：输入视图名称',
       cities: cityData[provinceData[0]],
-      secondCity: cityData[provinceData[0]][0]
+      secondCity: cityData[provinceData[0]][0],
+      btnsize : 'large'
     }
   }
 
@@ -126,7 +129,7 @@ class NewsViewForm extends Component{
     const cityOptions = this.state.cities.map(city => <Option key={city}>{city}</Option>);
 
     const {getFieldDecorator} = this.props.form;
-    var {current,value,steps,steps2} = this.state;
+    var {current,value,steps,steps2,btnsize} = this.state;
     const FormLayout = {
       labelCol : {
         sm : {span : 11}
@@ -279,8 +282,8 @@ class NewsViewForm extends Component{
                   </Row>
                   <Row>
                     <Col className="createViewBtn">
-                      <Button type="primary" onClick={this.one_next}>下一步</Button>
-                      <Button type="default" onClick={this.handleCancel}>取消</Button>
+                      <Button type="primary" size={btnsize} onClick={this.one_next}>下一步</Button>
+                      <Button type="default" size={btnsize} onClick={this.handleCancel}>取消</Button>
                     </Col>
                   </Row>
                 </div>
@@ -309,40 +312,13 @@ class NewsViewForm extends Component{
                             relus : [{required : false}]
                           })(
                             <div>
-                              <table className="filter">
-                                <thead>
-                                <tr>
-                                  <th>字段</th>
-                                  <th>操作</th>
-                                  <th>值</th>
-                                  <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                  <td>
-                                    <Select defaultValue={provinceData[0]} style={{width:200}} onChange={this.handleProvinceChange}>
-                                      {provinceOptions}
-                                    </Select>
-                                  </td>
-                                  <td>
-                                    <Select value={this.state.secondCity} style={{ width: 120 }} onChange={this.onSecondCityChange}>
-                                      {cityOptions}
-                                    </Select>
-                                  </td>
-                                  <td>
-                                    <Input style={{width:200}}/>
-                                  </td>
-                                  <td>与</td>
-                                </tr>
-                                </tbody>
-                              </table>
-
-                              <div className="subinfo">
-                                <p>1,记录类型字段，选项列表字段和选项列表（多选）字段，建议最多输入10个关键字，用英文逗号隔开实现或关系，如：“北京,上海,广州”。</p>
-                                <p>2,日期字段等于时可以使用“昨天”，“今天”，“明天”，“上个月”，“本月”，“下个月”，“上星期”，“本星期”，“下星期” 或 “yyyy-mm-dd”格式。</p>
-                                <a href="javascript:void(0)">添加高级选项</a>
-                              </div>
+                              <PublicSearch
+                                class={this.state.cities}
+                                level={this.state.secondCity}
+                                ClassArray={provinceData}
+                                LevelArray={cityData}
+                                onVisibleChange={this.handleselect}
+                              />
                             </div>
                           )}
                         </FormItem>
@@ -351,18 +327,18 @@ class NewsViewForm extends Component{
 
                     <Row>
                       <Col className="createViewBtn">
-                        <Button type="default" onClick={()=>this.setState({steps:true,title:'第一步：输入视图名称'})}>上一步</Button>
-                        <Button type="primary" onClick={this.two_next}>下一步</Button>
-                        <Button type="default" onClick={this.handleCancel}>取消</Button>
+                        <Button type="default" size={btnsize} onClick={()=>this.setState({steps:true,title:'第一步：输入视图名称'})}>上一步</Button>
+                        <Button type="primary" size={btnsize} onClick={this.two_next}>下一步</Button>
+                        <Button type="default" size={btnsize} onClick={this.handleCancel}>取消</Button>
                       </Col>
                     </Row>
                   </div>
                   :
                   <div>
 
-                    <Button type="default" onClick={()=>this.setState({steps2 : true,title :'第二步：指定过滤条件'})}>上一步</Button>
-                    <Button type="primary" onClick={this.save}>保存</Button>
-                    <Button type="default" onClick={this.handleCancel}>取消</Button>
+                    <Button type="default" size={btnsize} onClick={()=>this.setState({steps2 : true,title :'第二步：指定过滤条件'})}>上一步</Button>
+                    <Button type="primary" size={btnsize} onClick={this.save}>保存</Button>
+                    <Button type="default" size={btnsize} onClick={this.handleCancel}>取消</Button>
                   </div>
               }
             </Form>
@@ -371,6 +347,10 @@ class NewsViewForm extends Component{
       </div>
     )
   }
+
+  handleselect = (e)=>{
+    console.log(e)
+  };
 
   handleProvinceChange = (value) => {
     this.setState({

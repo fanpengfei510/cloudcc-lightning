@@ -2,8 +2,12 @@
  * Created by fanpf on 2017/5/19.
  */
 import React,{Component} from 'react';
-import {Input,Icon} from  'antd';
+import {Select,Icon} from  'antd';
+const Option = Select.Option;
 
+function handleChange(value){
+  console.log(`select ${value}`)
+}
 
 class EditableCell extends Component{
   constructor(prpos){
@@ -14,19 +18,15 @@ class EditableCell extends Component{
     }
   }
 
-  handleChange = (e)=> {
-    const value = e.target.value;
-    this.setState({value})
-  };
-
-  /**
-   * @method 原始数据是否发生改变
-   */
-  check = () => {
-    this.setState({ editable: false });
-    if (this.props.onChange && this.props.value !== this.state.value) {
+  check = ()=> {
+    this.setState({
+      editable : false
+    });
+    if(this.props.onChange){
       this.props.onChange(this.state.value);
-      console.log('111')
+      if(this.props.value !== this.state.value){
+        this.props.isEdit({editchange: true})
+      }
     }
   };
 
@@ -44,11 +44,12 @@ class EditableCell extends Component{
           {
             editable ?
               <div className="editable-cell-input-wrapper">
-                <Input
-                  value = {value}
-                  onChange = {this.handleChange}
-                  onPressEnter={this.check}
-                />
+                <Select defaultValue="--请选择--" style={{width : '80%'}} onChange={handleChange}>
+                  <Option value="1">北京市</Option>
+                  <Option value="2">上海</Option>
+                  <Option value="3">广州</Option>
+                  <Option value="4">深圳</Option>
+                </Select>
                 <Icon
                   type="check"
                   className = "editable-cell-icon-check"
